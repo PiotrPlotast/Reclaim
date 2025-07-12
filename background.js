@@ -1,17 +1,28 @@
 const blockedDomains = [
   "facebook.com",
   "instagram.com",
-  "twitter.com",
+  "x.com",
   "tiktok.com",
   "youtube.com",
   "reddit.com",
+  "twitch.tv",
+  "pinterest.com",
+  "linkedin.com",
 ];
-
 blockedDomains.forEach((blockedDomain) => {
   chrome.webNavigation.onBeforeNavigate.addListener(
     function (details) {
-      console.log(`onBeforeNavigate to: ${details.url}`);
+      if (details.frameId !== 0) return;
+      chrome.tabs.update(details.tabId, {
+        url:
+          chrome.runtime.getURL("blocked.html") +
+          `?originalUrl=${encodeURIComponent(
+            details.url
+          )}&domain=${encodeURIComponent(new URL(details.url).hostname)}`,
+      });
     },
-    { url: [{ hostContains: blockedDomain }] }
+    {
+      url: blockedDomains.map((domain) => ({ hostContains: domain })),
+    }
   );
 });
