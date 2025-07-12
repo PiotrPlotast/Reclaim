@@ -1,1 +1,23 @@
-
+{
+  "manifest_version": 3,
+  "name": "Reclaim - Reclaim your time",
+  "version": "1.0.0",
+  "description": "Reclaim your time by regulating time spent on distracting websites",
+  "content_scripts": [],
+  "permissions": ["activeTab", "storage", "tabs", "webNavigation"],
+  "host_permissions": [
+    "*://*.facebook.com/*",
+    "*://*.instagram.com/*",
+    "*://*.twitter.com/*",
+    "*://*.tiktok.com/*",
+    "*://*.youtube.com/*",
+    "*://*.reddit.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Reclaim - Reclaim your time"
+  }
+}
