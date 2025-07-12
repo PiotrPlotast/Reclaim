@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <title>Site Intercepted by Reclaim</title>
+  </head>
+  <body class="flex flex-col items-center justify-center h-screen gap-4">
+    <h1 class="text-5xl">Site Intercepted by Reclaim</h1>
+    <p class="text-2xl max-w-2xl text-center">
+      <!-- Message will be populated by JavaScript -->
+    </p>
+    <textarea
+      id="reason"
+      placeholder="Enter your reason"
+      class="w-full max-w-2xl p-2 border border-gray-300 rounded-md"
+    ></textarea>
+    <button
+      id="submit"
+      class="bg-blue-500 text-white px-4 py-2 rounded-md cursor-pointer hover:bg-blue-600"
+    >
+      Submit
+    </button>
+    <script src="blocked.js"></script>
+  </body>
+</html>
