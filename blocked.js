@@ -58,7 +58,7 @@ document.addEventListener("DOMContentLoaded", function () {
       empowering: true,
     };
 
-    const messageElement = document.querySelector("p");
+    const messageElement = document.querySelector("#message");
     if (messageElement) {
       messageElement.textContent = getRandomMessage(preferences);
     }
@@ -76,12 +76,17 @@ document.getElementById("submit").addEventListener("click", function (e) {
           `You will get ${freeTimeMinutes} minutes of free time. Have fun!`
         );
       } else {
-        alert(
-          "You used all your free time for today. Stay focused! The window will close in 5 seconds."
-        );
-        setTimeout(function () {
-          window.close();
-        }, 5000);
+        let secondsLeftBeforeClose = 5;
+        const messageElement = document.getElementById("message");
+        messageElement.textContent = `You used all your free time for today. Stay focused! The window will close in ${secondsLeftBeforeClose} seconds.`;
+        const interval = setInterval(function () {
+          secondsLeftBeforeClose--;
+          messageElement.textContent = `You used all your free time for today. Stay focused! The window will close in ${secondsLeftBeforeClose} seconds.`;
+          if (secondsLeftBeforeClose === 0) {
+            clearInterval(interval);
+            window.close();
+          }
+        }, 1000);
       }
     } else {
       alert("You will be redirected to the original URL. Stay focused!");
