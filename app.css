@@ -1,0 +1,31 @@
+body {
+  background-color: #ffffff;
+  color: #333333;
+}
+
+body.dark {
+  background-color: #1a202c;
+  color: #f7fafc;
+}
+
+.dark button {
+  background-color: #2d3748;
+  border-color: #4a5568;
+}
+
+.dark input,
+.dark select,
+.dark textarea {
+  background-color: #2d3748;
+  color: #f7fafc;
+  border-color: #4a5568;
+}
+
+.dark a {
+  color: #90cdf4;
+}
+
+/* Dark mode hover states */
+.dark button:hover {
+  background-color: #4a5568;
+}
