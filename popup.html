@@ -11,6 +11,7 @@
   </head>
   <body class="w-80 p-4">
     <h1 class="text-2xl font-bold mb-4">Reclaim Settings</h1>
+    <h2 class="text-lg font-semibold mb-2" id="timeLeftHeading"></h2>
 
     <div class="mb-4">
       <h2 class="text-lg font-semibold mb-2">Message Categories</h2>
@@ -36,6 +37,22 @@
           <span>Empowering & Motivational</span>
         </label>
       </div>
+    </div>
+
+    <div class="mb-4">
+      <h2 class="text-lg font-semibold mb-2">Free Time Preferences</h2>
+      <p class="text-sm text-gray-600 mb-3">
+        Choose how much free time you want to get per day:
+      </p>
+
+      <input
+        type="number"
+        id="freeTimeMinutes"
+        min="0"
+        max="60"
+        placeholder="Enter minutes"
+        class="w-full p-2 border border-gray-300 rounded-md"
+      />
     </div>
 
     <button

@@ -25,11 +25,11 @@ const messageCategories = {
   ],
 };
 
-function getAvailableMessages(preferences) {
+function getAvailableMessages(promptsPreferences) {
   let availableMessages = [];
 
-  Object.keys(preferences).forEach((category) => {
-    if (preferences[category] && messageCategories[category]) {
+  Object.keys(promptsPreferences).forEach((category) => {
+    if (promptsPreferences[category] && messageCategories[category]) {
       availableMessages = availableMessages.concat(messageCategories[category]);
     }
   });
@@ -43,8 +43,8 @@ function getAvailableMessages(preferences) {
   return availableMessages;
 }
 
-function getRandomMessage(preferences) {
-  const availableMessages = getAvailableMessages(preferences);
+function getRandomMessage(promptPreferences) {
+  const availableMessages = getAvailableMessages(promptPreferences);
   const randomIndex = Math.floor(Math.random() * availableMessages.length);
   return availableMessages[randomIndex];
 }
@@ -61,6 +61,30 @@ document.addEventListener("DOMContentLoaded", function () {
     const messageElement = document.querySelector("p");
     if (messageElement) {
       messageElement.textContent = getRandomMessage(preferences);
+    }
+  });
+});
+
+document.getElementById("submit").addEventListener("click", function (e) {
+  e.preventDefault();
+  const reason = document.getElementById("reason").value;
+  chrome.storage.sync.get(["freeTimeMinutes"], function (result) {
+    const freeTimeMinutes = result.freeTimeMinutes || 0;
+    if (reason === "1") {
+      if (freeTimeMinutes > 0) {
+        alert(
+          `You will get ${freeTimeMinutes} minutes of free time. Have fun!`
+        );
+      } else {
+        alert(
+          "You used all your free time for today. Stay focused! The window will close in 5 seconds."
+        );
+        setTimeout(function () {
+          window.close();
+        }, 5000);
+      }
+    } else {
+      alert("You will be redirected to the original URL. Stay focused!");
     }
   });
 });
