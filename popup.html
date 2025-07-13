@@ -1,1 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <title>Reclaim</title>
+  </head>
+  <body class="w-80 p-4">
+    <h1 class="text-2xl font-bold mb-4">Reclaim Settings</h1>
 
+    <div class="mb-4">
+      <h2 class="text-lg font-semibold mb-2">Message Categories</h2>
+      <p class="text-sm text-gray-600 mb-3">
+        Choose which types of reflection messages to show:
+      </p>
+
+      <div class="space-y-2">
+        <label class="flex items-center">
+          <input type="checkbox" id="gentle" class="mr-2" checked />
+          <span>Gentle & Encouraging</span>
+        </label>
+        <label class="flex items-center">
+          <input type="checkbox" id="direct" class="mr-2" checked />
+          <span>Direct & Focused</span>
+        </label>
+        <label class="flex items-center">
+          <input type="checkbox" id="mindful" class="mr-2" checked />
+          <span>Mindful & Reflective</span>
+        </label>
+        <label class="flex items-center">
+          <input type="checkbox" id="empowering" class="mr-2" checked />
+          <span>Empowering & Motivational</span>
+        </label>
+      </div>
+    </div>
+
+    <button
+      id="saveBtn"
+      class="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
+    >
+      Save Preferences
+    </button>
+
+    <div id="status" class="mt-2 text-sm text-green-600 hidden">
+      Settings saved!
+    </div>
+
+    <script src="popup.js"></script>
+  </body>
+</html>
