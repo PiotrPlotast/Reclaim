@@ -81,13 +81,22 @@ document.getElementById("submit").addEventListener("click", function (e) {
     const freeTimeMinutes = result.freeTimeMinutes || 0;
     if (reason === "1") {
       if (freeTimeMinutes > 0) {
-        messageElement.textContent = `You have ${freeTimeMinutes} minutes of free time left. Have fun!`;
-      } else {
-        let secondsLeftBeforeClose = 5;
-        messageElement.textContent = `You used all your free time for today. Stay focused! The window will close in ${secondsLeftBeforeClose} seconds.`;
+        let secondsLeftBeforeClose = 3;
+        messageElement.innerHTML = `You have ${freeTimeMinutes} minutes of free time left. Have fun!<br>You will be redirected to the original URL in ${secondsLeftBeforeClose} seconds.`;
         const interval = setInterval(function () {
           secondsLeftBeforeClose--;
-          messageElement.textContent = `You used all your free time for today. Stay focused! The window will close in ${secondsLeftBeforeClose} seconds.`;
+          messageElement.innerHTML = `You have ${freeTimeMinutes} minutes of free time left. Have fun!<br>You will be redirected to the original URL in ${secondsLeftBeforeClose} seconds.`;
+          if (secondsLeftBeforeClose === 0) {
+            clearInterval(interval);
+            window.location.href = originalUrl;
+          }
+        }, 1000);
+      } else {
+        let secondsLeftBeforeClose = 5;
+        messageElement.innerHTML = `You used all your free time for today. Stay focused! The window will close in ${secondsLeftBeforeClose} seconds or you can close the window.`;
+        const interval = setInterval(function () {
+          secondsLeftBeforeClose--;
+          messageElement.innerHTML = `You used all your free time for today. Stay focused! The window will close in ${secondsLeftBeforeClose} seconds or you can close the window.`;
           if (secondsLeftBeforeClose === 0) {
             clearInterval(interval);
             window.close();
@@ -95,7 +104,16 @@ document.getElementById("submit").addEventListener("click", function (e) {
         }, 1000);
       }
     } else {
-      alert("You will be redirected to the original URL. Stay focused!");
+      let secondsBeforeRedirect = 3;
+      messageElement.innerHTML = `You will be redirected to the original URL in ${secondsBeforeRedirect} seconds. Stay focused!`;
+      const interval = setInterval(function () {
+        secondsBeforeRedirect--;
+        messageElement.innerHTML = `You will be redirected to the original URL in ${secondsBeforeRedirect} seconds. Stay focused!`;
+        if (secondsBeforeRedirect === 0) {
+          clearInterval(interval);
+          window.location.href = originalUrl;
+        }
+      }, 1000);
     }
   });
 });
