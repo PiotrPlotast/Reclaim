@@ -4,30 +4,36 @@ document.addEventListener("DOMContentLoaded", function () {
 
 function loadPreferences() {
   chrome.storage.sync.get(
-    ["messagePreferences", "freeTimeMinutes"],
+    ["messagePreferences", "freeTimeMinutes", "showAlternativeSites"],
     function (result) {
-      const preferences = result.messagePreferences || {
+      const messagesPreferences = result.messagePreferences || {
         gentle: true,
         direct: true,
         mindful: true,
         empowering: true,
       };
 
-      document.getElementById("gentle").checked = preferences.gentle;
-      document.getElementById("direct").checked = preferences.direct;
-      document.getElementById("mindful").checked = preferences.mindful;
-      document.getElementById("empowering").checked = preferences.empowering;
+      document.getElementById("gentle").checked = messagesPreferences.gentle;
+      document.getElementById("direct").checked = messagesPreferences.direct;
+      document.getElementById("mindful").checked = messagesPreferences.mindful;
+      document.getElementById("empowering").checked =
+        messagesPreferences.empowering;
+
       document.getElementById("freeTimeMinutes").value =
         result.freeTimeMinutes || 0;
+
       document.getElementById(
         "timeLeftHeading"
       ).textContent = `Free time left for today: ${result.freeTimeMinutes} minutes`;
+
+      document.getElementById("showAlternativeSites").checked =
+        result.showAlternativeSites || false;
     }
   );
 }
 
 document.getElementById("saveBtn").addEventListener("click", function () {
-  const preferences = {
+  const messagesPreferences = {
     gentle: document.getElementById("gentle").checked,
     direct: document.getElementById("direct").checked,
     mindful: document.getElementById("mindful").checked,
@@ -35,11 +41,14 @@ document.getElementById("saveBtn").addEventListener("click", function () {
   };
 
   const freeTimeMinutes = document.getElementById("freeTimeMinutes").value;
-
+  const showAlternativeSites = document.getElementById(
+    "showAlternativeSites"
+  ).checked;
   chrome.storage.sync.set(
     {
-      messagePreferences: preferences,
+      messagePreferences: messagesPreferences,
       freeTimeMinutes,
+      showAlternativeSites,
     },
     function () {
       const status = document.getElementById("status");
