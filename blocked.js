@@ -2,14 +2,6 @@ const urlParams = new URLSearchParams(window.location.search);
 const originalUrl = urlParams.get("originalUrl");
 const domain = urlParams.get("domain");
 
-const actualTime = new Date();
-const actualHour = actualTime.getHours();
-const isAfter6PM = actualHour >= 18;
-
-if (isAfter6PM) {
-  document.body.classList.add("dark");
-}
-
 const messageCategories = {
   gentle: [
     "Hold on - Reclaim invites you to reflect.\nWhy are you visiting this site right now?",
@@ -32,6 +24,21 @@ const messageCategories = {
     "You have the power - Reclaim is here to support your decisions.\nWhat's driving this choice?",
   ],
 };
+
+chrome.storage.sync.get(["showAlternativeSites"], function (result) {
+  const showAlternativeSites = result.showAlternativeSites || false;
+  if (showAlternativeSites) {
+    document.getElementById("alternativeSites").classList.remove("hidden");
+  }
+});
+
+const actualTime = new Date();
+const actualHour = actualTime.getHours();
+const isAfter6PM = actualHour >= 18;
+
+if (isAfter6PM) {
+  document.body.classList.add("dark");
+}
 
 function getAvailableMessages(promptsPreferences) {
   let availableMessages = [];
@@ -82,7 +89,7 @@ document.getElementById("submit").addEventListener("click", function (e) {
     if (reason === "1") {
       if (freeTimeMinutes > 0) {
         let secondsLeftBeforeClose = 3;
-        messageElement.innerHTML = `You have ${freeTimeMinutes} minutes of free time left. Have fun!<br>You will be redirected to the original URL in ${secondsLeftBeforeClose} seconds.`;
+        messageElement.innerHTML = `You have ${freeTimeMinutes} minutes of free time left for today. Have fun!<br>You will be redirected to the original URL in ${secondsLeftBeforeClose} seconds.`;
         const interval = setInterval(function () {
           secondsLeftBeforeClose--;
           messageElement.innerHTML = `You have ${freeTimeMinutes} minutes of free time left. Have fun!<br>You will be redirected to the original URL in ${secondsLeftBeforeClose} seconds.`;
