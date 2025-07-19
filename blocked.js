@@ -2,33 +2,51 @@ const urlParams = new URLSearchParams(window.location.search);
 const originalUrl = urlParams.get("originalUrl");
 const domain = urlParams.get("domain");
 
-const messageCategories = {
-  gentle: [
-    "Hold on - Reclaim invites you to reflect.\nWhy are you visiting this site right now?",
-    "Take a moment - Reclaim is here to help you stay intentional.\nWhat do you hope to get from this visit?",
-    "Just a second - Reclaim is keeping you grounded.\nWhat's drawing you to this site right now?",
-  ],
-  direct: [
-    "Pause to focus - Reclaim detected a potential distraction.\nWhat value does this site bring you right now?",
-    "Stop for clarity - Reclaim is helping you act with purpose.\nWhy do you want to open this site?",
-    "Hold that click - Reclaim wants to keep you aligned.\nHow does this serve your current priorities?",
-  ],
-  mindful: [
-    "Mindful pause - before you continue, check in with yourself.\nWhat's your purpose here?",
-    "Take a breath - Reclaim is supporting your mindful choices.\nWhat intention guides this visit?",
-    "Pause and reflect - Reclaim is here to help you choose consciously.\nWhat's truly important right now?",
-  ],
-  empowering: [
-    "You're in control - Reclaim is just checking in.\nIs this aligned with your goals right now?",
-    "Your choice matters - Reclaim trusts your judgment.\nHow does this choice serve your best self?",
-    "You have the power - Reclaim is here to support your decisions.\nWhat's driving this choice?",
-  ],
-};
+let messageCategories = {};
 
-chrome.storage.sync.get(["showAlternativeSites"], function (result) {
-  const showAlternativeSites = result.showAlternativeSites || false;
+// Load message categories from JSON file
+fetch(chrome.runtime.getURL("messages.json"))
+  .then((response) => response.json())
+  .then((data) => {
+    messageCategories = data;
+  })
+  .catch((error) => {
+    console.error("Error loading messages:", error);
+    // Fallback to default messages if JSON fails to load
+    messageCategories = {
+      gentle: [
+        "Hold on - Reclaim invites you to reflect.\nWhy are you visiting this site right now?",
+      ],
+      direct: [
+        "Pause to focus - Reclaim detected a potential distraction.\nWhat value does this site bring you right now?",
+      ],
+      mindful: [
+        "Mindful pause - before you continue, check in with yourself.\nWhat's your purpose here?",
+      ],
+      empowering: [
+        "You're in control - Reclaim is just checking in.\nIs this aligned with your goals right now?",
+      ],
+    };
+  });
+
+chrome.storage.sync.get(["toggleAlternativeSites"], function (result) {
+  const showAlternativeSites = result.toggleAlternativeSites || false;
   if (showAlternativeSites) {
     document.getElementById("alternativeSites").classList.remove("hidden");
+  }
+});
+
+// Listen for changes to toggleAlternativeSites preference
+chrome.storage.onChanged.addListener(function (changes, namespace) {
+  if (changes.toggleAlternativeSites) {
+    const altSites = document.getElementById("alternativeSites");
+    if (altSites) {
+      if (changes.toggleAlternativeSites.newValue) {
+        altSites.classList.remove("hidden");
+      } else {
+        altSites.classList.add("hidden");
+      }
+    }
   }
 });
 
@@ -64,6 +82,20 @@ function getRandomMessage(promptPreferences) {
   return availableMessages[randomIndex];
 }
 
+function setMessageWhenReady(preferences) {
+  // Check if messages are loaded
+  if (Object.keys(messageCategories).length === 0) {
+    // If not loaded yet, wait a bit and try again
+    setTimeout(() => setMessageWhenReady(preferences), 100);
+    return;
+  }
+
+  const messageElement = document.querySelector("#message");
+  if (messageElement) {
+    messageElement.textContent = getRandomMessage(preferences);
+  }
+}
+
 document.addEventListener("DOMContentLoaded", function () {
   chrome.storage.sync.get(["messagePreferences"], function (result) {
     const preferences = result.messagePreferences || {
@@ -73,10 +105,7 @@ document.addEventListener("DOMContentLoaded", function () {
       empowering: true,
     };
 
-    const messageElement = document.querySelector("#message");
-    if (messageElement) {
-      messageElement.textContent = getRandomMessage(preferences);
-    }
+    setMessageWhenReady(preferences);
   });
 });
 
