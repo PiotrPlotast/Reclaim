@@ -19,5 +19,11 @@
   "action": {
     "default_popup": "popup.html",
     "default_title": "Reclaim - Reclaim your time"
-  }
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["messages.json"],
+      "matches": ["<all_urls>"]
+    }
+  ]
 }
