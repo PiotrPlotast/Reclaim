@@ -26,10 +26,38 @@ function loadPreferences() {
         "timeLeftHeading"
       ).textContent = `Free time left for today: ${result.freeTimeMinutes} minutes`;
 
-      document.getElementById("showAlternativeSites").checked =
-        result.showAlternativeSites || false;
+      document.getElementById("toggleAlternativeSites").checked =
+        result.toggleAlternativeSites || false;
+
+      updateAlternativeSitesVisibility(result.toggleAlternativeSites);
     }
   );
+}
+
+document
+  .getElementById("toggleAlternativeSites")
+  .addEventListener("change", function (e) {
+    chrome.storage.sync.set(
+      { toggleAlternativeSites: e.target.checked },
+      function () {
+        updateAlternativeSitesVisibility(e.target.checked);
+      }
+    );
+  });
+
+function updateAlternativeSitesVisibility(show) {
+  // Update popup DOM
+  const altSites = document.getElementById("alternativeSites");
+  if (altSites) {
+    if (show) {
+      altSites.classList.remove("hidden");
+    } else {
+      altSites.classList.add("hidden");
+    }
+  }
+
+  // Update storage so blocked page can react
+  chrome.storage.sync.set({ toggleAlternativeSites: show });
 }
 
 document.getElementById("saveBtn").addEventListener("click", function () {
@@ -41,14 +69,14 @@ document.getElementById("saveBtn").addEventListener("click", function () {
   };
 
   const freeTimeMinutes = document.getElementById("freeTimeMinutes").value;
-  const showAlternativeSites = document.getElementById(
-    "showAlternativeSites"
+  const toggleAlternativeSites = document.getElementById(
+    "toggleAlternativeSites"
   ).checked;
   chrome.storage.sync.set(
     {
       messagePreferences: messagesPreferences,
       freeTimeMinutes,
-      showAlternativeSites,
+      toggleAlternativeSites,
     },
     function () {
       const status = document.getElementById("status");
