@@ -128,9 +128,9 @@ document.getElementById("submit").addEventListener("click", function (e) {
             chrome.storage.local.set(
               {
                 temporaryAllowance: {
-                  url: originalUrl,
+                  domain: new URL(originalUrl).hostname,
                   timestamp: Date.now(),
-                  expiresAt: Date.now() + 1 * 60 * 1000,
+                  expiresAt: Date.now() + freeTimeMinutes * 60 * 1000,
                 },
               },
               function () {
@@ -163,7 +163,7 @@ document.getElementById("submit").addEventListener("click", function (e) {
           chrome.storage.local.set(
             {
               temporaryAllowance: {
-                url: originalUrl,
+                domain: new URL(originalUrl).hostname,
                 timestamp: Date.now(),
                 expiresAt: Date.now() + 5 * 60 * 1000, // 5 minutes
               },

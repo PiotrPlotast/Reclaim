@@ -18,16 +18,22 @@ blockedDomains.forEach((blockedDomain) => {
       // Check for temporary allowance
       chrome.storage.local.get(["temporaryAllowance"], function (result) {
         const allowance = result.temporaryAllowance;
+        console.log("Temporary allowance:", allowance);
+        console.log("Current time:", Date.now());
+        console.log(
+          "Allowance expires at:",
+          allowance ? allowance.expiresAt : null
+        );
         const currentTime = Date.now();
 
-        // If there's a valid temporary allowance for this URL
+        // If there's a valid temporary allowance for this domain
         if (
           allowance &&
-          allowance.url === details.url &&
+          allowance.domain === new URL(details.url).hostname &&
           currentTime < allowance.expiresAt
         ) {
-          // Allow the navigation, but remove the allowance
-          chrome.storage.local.remove(["temporaryAllowance"]);
+          // Allow the navigation - don't remove allowance yet, let it expire naturally
+          console.log("Allowing navigation due to temporary allowance");
           return;
         }
 
@@ -60,6 +66,8 @@ setInterval(function () {
 
     if (allowance && currentTime >= allowance.expiresAt) {
       chrome.storage.local.remove(["temporaryAllowance"]);
+      console.log("Removed expired allowance");
     }
+    console.log("Checked for expired allowances.");
   });
-}, 60000); // Check every minute
+}, 60000);
