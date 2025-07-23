@@ -12,7 +12,6 @@ fetch(chrome.runtime.getURL("messages.json"))
   })
   .catch((error) => {
     console.error("Error loading messages:", error);
-    // Fallback to default messages if JSON fails to load
     messageCategories = {
       gentle: [
         "Hold on - Reclaim invites you to reflect.\nWhy are you visiting this site right now?",
@@ -124,7 +123,19 @@ document.getElementById("submit").addEventListener("click", function (e) {
           messageElement.innerHTML = `You have ${freeTimeMinutes} minutes of free time left. Have fun!<br>You will be redirected to the original URL in ${secondsLeftBeforeClose} seconds.`;
           if (secondsLeftBeforeClose === 0) {
             clearInterval(interval);
-            window.location.href = originalUrl;
+            // Set temporary allowance before redirecting
+            chrome.storage.local.set(
+              {
+                temporaryAllowance: {
+                  url: originalUrl,
+                  timestamp: Date.now(),
+                  expiresAt: Date.now() + 1 * 60 * 1000, // 5 minutes
+                },
+              },
+              function () {
+                window.location.href = originalUrl;
+              }
+            );
           }
         }, 1000);
       } else {
@@ -147,7 +158,19 @@ document.getElementById("submit").addEventListener("click", function (e) {
         messageElement.innerHTML = `You will be redirected to the original URL in ${secondsBeforeRedirect} seconds. Stay focused!`;
         if (secondsBeforeRedirect === 0) {
           clearInterval(interval);
-          window.location.href = originalUrl;
+          // Set temporary allowance before redirecting
+          chrome.storage.local.set(
+            {
+              temporaryAllowance: {
+                url: originalUrl,
+                timestamp: Date.now(),
+                expiresAt: Date.now() + 5 * 60 * 1000, // 5 minutes
+              },
+            },
+            function () {
+              window.location.href = originalUrl;
+            }
+          );
         }
       }, 1000);
     }
