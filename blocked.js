@@ -1,7 +1,8 @@
 const urlParams = new URLSearchParams(window.location.search);
 const originalUrl = urlParams.get("originalUrl");
 const domain = urlParams.get("domain");
-
+const messageElement = document.querySelector("#message");
+const submitButton = document.querySelector("#submit");
 let messageCategories = {};
 
 // Load message categories from JSON file
@@ -89,7 +90,6 @@ function setMessageWhenReady(preferences) {
     return;
   }
 
-  const messageElement = document.querySelector("#message");
   if (messageElement) {
     messageElement.textContent = getRandomMessage(preferences);
   }
@@ -117,6 +117,7 @@ document.getElementById("submit").addEventListener("click", function (e) {
     if (reason === "1") {
       if (freeTimeMinutes > 0) {
         let secondsLeftBeforeClose = 3;
+        submitButton.disabled = true;
         messageElement.innerHTML = `You have ${freeTimeMinutes} minutes of free time left for today. Have fun!<br>You will be redirected to the original URL in ${secondsLeftBeforeClose} seconds.`;
         const interval = setInterval(function () {
           secondsLeftBeforeClose--;
@@ -129,7 +130,7 @@ document.getElementById("submit").addEventListener("click", function (e) {
                 temporaryAllowance: {
                   url: originalUrl,
                   timestamp: Date.now(),
-                  expiresAt: Date.now() + 1 * 60 * 1000, // 5 minutes
+                  expiresAt: Date.now() + 1 * 60 * 1000,
                 },
               },
               function () {
