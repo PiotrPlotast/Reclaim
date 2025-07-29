@@ -4,7 +4,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
 function loadPreferences() {
   chrome.storage.sync.get(
-    ["messagePreferences", "freeTimeMinutesPreference", "showAlternativeSites"],
+    [
+      "messagePreferences",
+      "freeTimeMinutesPreference",
+      "freeTimeMinutes",
+      "showAlternativeSites",
+    ],
     function (result) {
       const messagesPreferences = result.messagePreferences || {
         gentle: true,
@@ -22,9 +27,11 @@ function loadPreferences() {
       document.getElementById("freeTimeMinutesPreference").value =
         result.freeTimeMinutesPreference || 0;
 
+      // Show actual remaining free time, not preference
+      const remainingTime = result.freeTimeMinutes || 0;
       document.getElementById(
         "timeLeftHeading"
-      ).textContent = `Free time left for today: ${result.freeTimeMinutesPreference} minutes`;
+      ).textContent = `Free time left for today: ${remainingTime} minutes`;
 
       document.getElementById("toggleAlternativeSites").checked =
         result.toggleAlternativeSites || false;
@@ -68,16 +75,18 @@ document.getElementById("saveBtn").addEventListener("click", function () {
     empowering: document.getElementById("empowering").checked,
   };
 
-  const freeTimeMinutesPreference = document.getElementById(
-    "freeTimeMinutesPreference"
-  ).value;
+  const freeTimeMinutesPreference =
+    parseInt(document.getElementById("freeTimeMinutesPreference").value) || 0;
   const toggleAlternativeSites = document.getElementById(
     "toggleAlternativeSites"
   ).checked;
+
+  // Update both preference and current free time
   chrome.storage.sync.set(
     {
       messagePreferences: messagesPreferences,
       freeTimeMinutesPreference,
+      freeTimeMinutes: freeTimeMinutesPreference, // Reset current free time to new preference
       toggleAlternativeSites,
     },
     function () {
@@ -85,6 +94,8 @@ document.getElementById("saveBtn").addEventListener("click", function () {
       status.classList.remove("hidden");
       setTimeout(() => {
         status.classList.add("hidden");
+        // Reload preferences to show updated values
+        loadPreferences();
       }, 2000);
     }
   );
