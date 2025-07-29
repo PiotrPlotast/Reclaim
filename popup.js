@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 function loadPreferences() {
   chrome.storage.sync.get(
-    ["messagePreferences", "freeTimeMinutes", "showAlternativeSites"],
+    ["messagePreferences", "freeTimeMinutesPreference", "showAlternativeSites"],
     function (result) {
       const messagesPreferences = result.messagePreferences || {
         gentle: true,
@@ -19,12 +19,12 @@ function loadPreferences() {
       document.getElementById("empowering").checked =
         messagesPreferences.empowering;
 
-      document.getElementById("freeTimeMinutes").value =
-        result.freeTimeMinutes || 0;
+      document.getElementById("freeTimeMinutesPreference").value =
+        result.freeTimeMinutesPreference || 0;
 
       document.getElementById(
         "timeLeftHeading"
-      ).textContent = `Free time left for today: ${result.freeTimeMinutes} minutes`;
+      ).textContent = `Free time left for today: ${result.freeTimeMinutesPreference} minutes`;
 
       document.getElementById("toggleAlternativeSites").checked =
         result.toggleAlternativeSites || false;
@@ -68,14 +68,16 @@ document.getElementById("saveBtn").addEventListener("click", function () {
     empowering: document.getElementById("empowering").checked,
   };
 
-  const freeTimeMinutes = document.getElementById("freeTimeMinutes").value;
+  const freeTimeMinutesPreference = document.getElementById(
+    "freeTimeMinutesPreference"
+  ).value;
   const toggleAlternativeSites = document.getElementById(
     "toggleAlternativeSites"
   ).checked;
   chrome.storage.sync.set(
     {
       messagePreferences: messagesPreferences,
-      freeTimeMinutes,
+      freeTimeMinutesPreference,
       toggleAlternativeSites,
     },
     function () {
