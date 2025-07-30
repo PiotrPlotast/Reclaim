@@ -2,6 +2,16 @@ document.addEventListener("DOMContentLoaded", function () {
   loadPreferences();
 });
 
+chrome.storage.onChanged.addListener(function (changes, namespace) {
+  if (namespace === "sync" && changes.freeTimeMinutes) {
+    // Auto-refresh when freeTimeMinutes changes
+    const remainingTime = changes.freeTimeMinutes.newValue || 0;
+    document.getElementById(
+      "timeLeftHeading"
+    ).textContent = `Free time left for today: ${remainingTime} minutes`;
+  }
+});
+
 function loadPreferences() {
   chrome.storage.sync.get(
     [
