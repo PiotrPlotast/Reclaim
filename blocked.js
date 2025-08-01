@@ -109,7 +109,6 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 document.getElementById("submit").addEventListener("click", function (e) {
-  const messageElement = document.getElementById("message");
   e.preventDefault();
   const reason = document.getElementById("reason").value;
   chrome.storage.sync.get(["freeTimeMinutes"], function (result) {
@@ -121,7 +120,7 @@ document.getElementById("submit").addEventListener("click", function (e) {
         messageElement.innerHTML = `You have ${freeTimeMinutes} minutes of free time left for today. Have fun!<br>You will be redirected to the original URL in ${secondsLeftBeforeClose} seconds.`;
         const interval = setInterval(function () {
           secondsLeftBeforeClose--;
-          messageElement.innerHTML = `You have ${freeTimeMinutes} minutes of free time left. Have fun!<br>You will be redirected to the original URL in ${secondsLeftBeforeClose} seconds.`;
+          messageElement.innerHTML = `You have ${freeTimeMinutes} minutes of free time left for today. Have fun!<br>You will be redirected to the original URL in ${secondsLeftBeforeClose} seconds.`;
           if (secondsLeftBeforeClose === 0) {
             clearInterval(interval);
             // Set temporary allowance before redirecting
@@ -165,6 +164,7 @@ document.getElementById("submit").addEventListener("click", function (e) {
               temporaryAllowance: {
                 domain: new URL(originalUrl).hostname,
                 timestamp: Date.now(),
+                lastAllowanceDate: new Date().toDateString(),
                 expiresAt: Date.now() + 5 * 60 * 1000, // 5 minutes
               },
             },
