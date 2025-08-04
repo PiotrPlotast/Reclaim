@@ -15,16 +15,16 @@ fetch(chrome.runtime.getURL("messages.json"))
     console.error("Error loading messages:", error);
     messageCategories = {
       gentle: [
-        "Hold on - Zentra invites you to reflect.\nWhy are you visiting this site right now?",
+        "Hold on - Reclaim invites you to reflect.\nWhy are you visiting this site right now?",
       ],
       direct: [
-        "Pause to focus - Zentra detected a potential distraction.\nWhat value does this site bring you right now?",
+        "Pause to focus - Reclaim detected a potential distraction.\nWhat value does this site bring you right now?",
       ],
       mindful: [
         "Mindful pause - before you continue, check in with yourself.\nWhat's your purpose here?",
       ],
       empowering: [
-        "You're in control - Zentra is just checking in.\nIs this aligned with your goals right now?",
+        "You're in control - Reclaim is just checking in.\nIs this aligned with your goals right now?",
       ],
     };
   });
