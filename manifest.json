@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Reclaim - Reclaim your time",
+  "name": "Zentra - Your mind. Clear again.",
   "version": "1.0.0",
-  "description": "Reclaim your time by regulating time spent on distracting websites",
+  "description": "Designed for people who think before they scroll. Zentra helps you reclaim your time and attention by blocking distracting websites and providing a focused browsing experience.",
   "content_scripts": [],
   "permissions": ["activeTab", "storage", "tabs", "webNavigation"],
   "host_permissions": [
@@ -18,7 +18,7 @@
   },
   "action": {
     "default_popup": "popup.html",
-    "default_title": "Reclaim - Reclaim your time"
+    "default_title": "Zentra - Your mind. Clear again."
   },
   "web_accessible_resources": [
     {
