@@ -1,112 +1,106 @@
+var timeLeftHeading = document.getElementById("timeLeftHeading");
+var gentleMessages = document.getElementById("gentle");
+var directMessages = document.getElementById("direct");
+var mindfulMessages = document.getElementById("mindful");
+var empoweringMessages = document.getElementById("empowering");
+var freeTimeMinutesPreferenceElement = document.getElementById("freeTimeMinutesPreference");
+var toggleAlternativeSitesElement = document.getElementById("toggleAlternativeSites");
+var saveBtn = document.getElementById("saveBtn");
 document.addEventListener("DOMContentLoaded", function () {
-  loadPreferences();
+    loadPreferences();
 });
-
 chrome.storage.onChanged.addListener(function (changes, namespace) {
-  if (namespace === "sync" && changes.freeTimeMinutes) {
-    // Auto-refresh when freeTimeMinutes changes
-    const remainingTime = changes.freeTimeMinutes.newValue || 0;
-    document.getElementById(
-      "timeLeftHeading"
-    ).textContent = `Free time left for today: ${remainingTime} minutes`;
-  }
+    if (namespace === "sync" && changes.freeTimeMinutes) {
+        // Auto-refresh when freeTimeMinutes changes
+        var remainingTime = changes.freeTimeMinutes.newValue || 0;
+        if (timeLeftHeading)
+            timeLeftHeading.textContent = "Free time left for today: ".concat(remainingTime, " minutes");
+    }
 });
-
 function loadPreferences() {
-  chrome.storage.sync.get(
-    [
-      "messagePreferences",
-      "freeTimeMinutesPreference",
-      "freeTimeMinutes",
-      "showAlternativeSites",
-    ],
-    function (result) {
-      const messagesPreferences = result.messagePreferences || {
-        gentle: true,
-        direct: true,
-        mindful: true,
-        empowering: true,
-      };
-
-      document.getElementById("gentle").checked = messagesPreferences.gentle;
-      document.getElementById("direct").checked = messagesPreferences.direct;
-      document.getElementById("mindful").checked = messagesPreferences.mindful;
-      document.getElementById("empowering").checked =
-        messagesPreferences.empowering;
-
-      document.getElementById("freeTimeMinutesPreference").value =
-        result.freeTimeMinutesPreference || 0;
-
-      // Show actual remaining free time, not preference
-      const remainingTime = result.freeTimeMinutes || 0;
-      document.getElementById(
-        "timeLeftHeading"
-      ).textContent = `Free time left for today: ${remainingTime} minutes`;
-
-      document.getElementById("toggleAlternativeSites").checked =
-        result.toggleAlternativeSites || false;
-
-      updateAlternativeSitesVisibility(result.toggleAlternativeSites);
-    }
-  );
+    chrome.storage.sync.get([
+        "messagePreferences",
+        "freeTimeMinutesPreference",
+        "freeTimeMinutes",
+        "showAlternativeSites",
+    ], function (result) {
+        var messagesPreferences = result.messagePreferences || {
+            gentle: true,
+            direct: true,
+            mindful: true,
+            empowering: true,
+        };
+        if (gentleMessages)
+            gentleMessages.checked =
+                messagesPreferences.gentle;
+        if (directMessages)
+            directMessages.checked =
+                messagesPreferences.direct;
+        if (mindfulMessages)
+            mindfulMessages.checked =
+                messagesPreferences.mindful;
+        if (empoweringMessages)
+            empoweringMessages.checked =
+                messagesPreferences.empowering;
+        if (freeTimeMinutesPreferenceElement)
+            freeTimeMinutesPreferenceElement.value =
+                result.freeTimeMinutesPreference || 0;
+        var remainingTime = result.freeTimeMinutes || 0;
+        if (timeLeftHeading)
+            timeLeftHeading.textContent = "Free time left for today: ".concat(remainingTime, " minutes");
+        if (toggleAlternativeSitesElement)
+            toggleAlternativeSitesElement.checked =
+                result.toggleAlternativeSites || false;
+        updateAlternativeSitesVisibility(result.toggleAlternativeSites);
+    });
 }
-
-document
-  .getElementById("toggleAlternativeSites")
-  .addEventListener("change", function (e) {
-    chrome.storage.sync.set(
-      { toggleAlternativeSites: e.target.checked },
-      function () {
-        updateAlternativeSitesVisibility(e.target.checked);
-      }
-    );
-  });
-
+if (toggleAlternativeSitesElement)
+    toggleAlternativeSitesElement.addEventListener("change", function (e) {
+        var target = e.target;
+        chrome.storage.sync.set({ toggleAlternativeSites: target.checked }, function () {
+            updateAlternativeSitesVisibility(target.checked);
+        });
+    });
 function updateAlternativeSitesVisibility(show) {
-  // Update popup DOM
-  const altSites = document.getElementById("alternativeSites");
-  if (altSites) {
-    if (show) {
-      altSites.classList.remove("hidden");
-    } else {
-      altSites.classList.add("hidden");
+    // Update popup DOM
+    var altSites = document.getElementById("alternativeSites");
+    if (altSites) {
+        if (show) {
+            altSites.classList.remove("hidden");
+        }
+        else {
+            altSites.classList.add("hidden");
+        }
     }
-  }
-
-  // Update storage so blocked page can react
-  chrome.storage.sync.set({ toggleAlternativeSites: show });
+    // Update storage so blocked page can react
+    chrome.storage.sync.set({ toggleAlternativeSites: show });
 }
-
-document.getElementById("saveBtn").addEventListener("click", function () {
-  const messagesPreferences = {
-    gentle: document.getElementById("gentle").checked,
-    direct: document.getElementById("direct").checked,
-    mindful: document.getElementById("mindful").checked,
-    empowering: document.getElementById("empowering").checked,
-  };
-
-  const freeTimeMinutesPreference =
-    parseInt(document.getElementById("freeTimeMinutesPreference").value) || 0;
-  const toggleAlternativeSites = document.getElementById(
-    "toggleAlternativeSites"
-  ).checked;
-
-  // Update both preference and current free time
-  chrome.storage.sync.set(
-    {
-      messagePreferences: messagesPreferences,
-      freeTimeMinutesPreference,
-      freeTimeMinutes: freeTimeMinutesPreference, // Reset current free time to new preference
-      toggleAlternativeSites,
-    },
-    function () {
-      const status = document.getElementById("status");
-      status.classList.remove("hidden");
-      setTimeout(() => {
-        status.classList.add("hidden");
-        // Reload preferences to show updated values
-        loadPreferences();
-      }, 2000);
-    }
-  );
-});
+if (saveBtn)
+    saveBtn.addEventListener("click", function () {
+        var messagesPreferences = {
+            gentle: gentleMessages.checked,
+            direct: directMessages.checked,
+            mindful: mindfulMessages.checked,
+            empowering: empoweringMessages.checked,
+        };
+        var freeTimeMinutesPreference = parseInt(freeTimeMinutesPreferenceElement.value) ||
+            0;
+        var toggleAlternativeSites = toggleAlternativeSitesElement.checked;
+        // Update both preference and current free time
+        chrome.storage.sync.set({
+            messagePreferences: messagesPreferences,
+            freeTimeMinutesPreference: freeTimeMinutesPreference,
+            freeTimeMinutes: freeTimeMinutesPreference, // Reset current free time to new preference
+            toggleAlternativeSites: toggleAlternativeSites,
+        }, function () {
+            var settingsSavedMessage = document.getElementById("settingsSavedMessage");
+            if (settingsSavedMessage)
+                settingsSavedMessage.classList.remove("hidden");
+            setTimeout(function () {
+                if (settingsSavedMessage)
+                    settingsSavedMessage.classList.add("hidden");
+                // Reload preferences to show updated values
+                loadPreferences();
+            }, 2000);
+        });
+    });
